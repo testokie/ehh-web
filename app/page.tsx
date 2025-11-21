@@ -37,6 +37,7 @@ export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isOverHero, setIsOverHero] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,10 +59,32 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (isMobileMenuOpen && !target.closest("nav")) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    if (isMobileMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.body.style.overflow = "unset";
+    };
+  }, [isMobileMenuOpen]);
+
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
+      setIsMobileMenuOpen(false);
     }
   };
 
@@ -73,18 +96,20 @@ export default function Home() {
           isScrolled ? "bg-white shadow-md py-4" : "bg-transparent py-6"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-[var(--primary-red)] rounded"></div>
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[var(--primary-red)] rounded"></div>
               <span
-                className={`text-xl font-semibold transition-colors duration-300 ${
+                className={`text-lg sm:text-xl font-semibold transition-colors duration-300 ${
                   isOverHero ? "text-white" : "text-[var(--text-primary)]"
                 }`}
               >
                 EHH
               </span>
             </div>
+
+            {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
               {navItems.map((item) => (
                 <button
@@ -106,12 +131,64 @@ export default function Home() {
                 </button>
               ))}
             </div>
+
+            {/* Mobile Hamburger Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className={`md:hidden p-2 rounded-md transition-colors ${
+                isOverHero && !isScrolled
+                  ? "text-white hover:bg-white/10"
+                  : "text-[var(--text-primary)] hover:bg-gray-100"
+              }`}
+              aria-label="Toggle menu"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                {isMobileMenuOpen ? (
+                  <path d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
+
+          {/* Mobile Menu */}
+          <div
+            className={`md:hidden absolute top-full left-0 right-0 bg-white shadow-lg transition-all duration-300 overflow-hidden ${
+              isMobileMenuOpen
+                ? "max-h-screen opacity-100"
+                : "max-h-0 opacity-0"
+            }`}
+          >
+            <div className="px-4 py-4 space-y-2">
+              {navItems.map((item) => (
+                <button
+                  key={item.sectionId}
+                  onClick={() => scrollToSection(item.sectionId)}
+                  className={`w-full text-left px-4 py-3 rounded-md transition-colors font-medium ${
+                    item.isCTA
+                      ? "bg-[var(--primary-red)] text-white hover:bg-[var(--primary-red-dark)]"
+                      : "text-[var(--text-secondary)] hover:bg-gray-100 hover:text-[var(--primary-red)]"
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </nav>
 
       {/* Hero Section with Image Slider */}
-      <section className="relative h-screen min-h-[600px] max-h-[900px] overflow-hidden">
+      <section className="relative h-screen min-h-[500px] sm:min-h-[600px] max-h-[900px] overflow-hidden">
         {/* Image Slider */}
         <div className="absolute inset-0">
           {heroSlides.map((slide, index) => (
@@ -136,14 +213,14 @@ export default function Home() {
         <div className="absolute inset-0 bg-black/50"></div>
 
         {/* Content Overlay */}
-        <div className="relative h-full flex items-center justify-center">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full">
-            <div className="max-w-4xl space-y-8 text-center lg:text-left">
-              <div className="space-y-6">
-                <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight drop-shadow-lg">
+        <div className="relative h-full flex items-center justify-center pt-20 pb-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            <div className="max-w-4xl space-y-6 sm:space-y-8 text-center lg:text-left">
+              <div className="space-y-4 sm:space-y-6">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight drop-shadow-lg px-4 sm:px-0">
                   Shaping Tomorrow's Global Hospitality Leaders
                 </h1>
-                <p className="text-xl md:text-2xl lg:text-3xl text-white/95 leading-relaxed drop-shadow-md">
+                <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-white/95 leading-relaxed drop-shadow-md px-4 sm:px-0">
                   Starting Today in Association with{" "}
                   <span className="text-[var(--primary-red-light)] font-semibold">
                     MAF Accor Hotels and Resorts
@@ -151,16 +228,16 @@ export default function Home() {
                   – Dubai UAE
                 </p>
               </div>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start px-4 sm:px-0">
                 <button
                   onClick={() => scrollToSection("contact")}
-                  className="bg-[var(--primary-red)] text-white px-8 py-4 rounded-md hover:bg-[var(--primary-red-dark)] transition-colors font-semibold text-lg shadow-lg hover:shadow-xl transform hover:scale-105"
+                  className="bg-[var(--primary-red)] text-white px-6 sm:px-8 py-3 sm:py-4 rounded-md hover:bg-[var(--primary-red-dark)] transition-colors font-semibold text-base sm:text-lg shadow-lg hover:shadow-xl transform hover:scale-105"
                 >
                   Start Your Journey
                 </button>
                 <button
                   onClick={() => scrollToSection("about")}
-                  className="bg-white/10 backdrop-blur-sm border-2 border-white text-white px-8 py-4 rounded-md hover:bg-white hover:text-[var(--primary-red)] transition-colors font-semibold text-lg shadow-lg hover:shadow-xl transform hover:scale-105"
+                  className="bg-white/10 backdrop-blur-sm border-2 border-white text-white px-6 sm:px-8 py-3 sm:py-4 rounded-md hover:bg-white hover:text-[var(--primary-red)] transition-colors font-semibold text-base sm:text-lg shadow-lg hover:shadow-xl transform hover:scale-105"
                 >
                   Learn More
                 </button>
@@ -170,14 +247,14 @@ export default function Home() {
         </div>
 
         {/* Slider Indicators */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3">
+        <div className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 sm:space-x-3 z-10">
           {heroSlides.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentSlide(index)}
               className={`h-2 rounded-full transition-all duration-300 ${
                 index === currentSlide
-                  ? "w-8 bg-[var(--primary-red)]"
+                  ? "w-6 sm:w-8 bg-[var(--primary-red)]"
                   : "w-2 bg-white/50 hover:bg-white/75"
               }`}
               aria-label={`Go to slide ${index + 1}`}
@@ -186,26 +263,29 @@ export default function Home() {
         </div>
 
         {/* Scroll Indicator */}
-        <div className="absolute bottom-8 right-8 hidden lg:block">
+        <div className="absolute bottom-4 sm:bottom-8 right-4 sm:right-8 hidden lg:block">
           <div className="flex flex-col items-center space-y-2 text-white/70">
-            <span className="text-sm font-medium">Scroll</span>
-            <div className="w-6 h-10 border-2 border-white/50 rounded-full flex items-start justify-center p-2">
-              <div className="w-1.5 h-1.5 bg-white/70 rounded-full animate-bounce"></div>
+            <span className="text-xs sm:text-sm font-medium">Scroll</span>
+            <div className="w-5 h-8 sm:w-6 sm:h-10 border-2 border-white/50 rounded-full flex items-start justify-center p-1.5 sm:p-2">
+              <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-white/70 rounded-full animate-bounce"></div>
             </div>
           </div>
         </div>
       </section>
 
       {/* About EHH */}
-      <section id="about" className="py-24 px-6 lg:px-8 bg-white">
-        <div className="max-w-4xl mx-auto space-y-8">
-          <div className="text-center space-y-4">
-            <h2 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)]">
+      <section
+        id="about"
+        className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white"
+      >
+        <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
+          <div className="text-center space-y-3 sm:space-y-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--text-primary)]">
               About EHH
             </h2>
-            <div className="w-24 h-1 bg-[var(--primary-red)] mx-auto"></div>
+            <div className="w-20 sm:w-24 h-1 bg-[var(--primary-red)] mx-auto"></div>
           </div>
-          <div className="space-y-6 text-lg text-[var(--text-secondary)] leading-relaxed">
+          <div className="space-y-4 sm:space-y-6 text-base sm:text-lg text-[var(--text-secondary)] leading-relaxed">
             <p>
               <span className="font-semibold text-[var(--text-primary)]">
                 Ecole Hôtelière Helvétique (EHH)
@@ -228,22 +308,24 @@ export default function Home() {
       </section>
 
       {/* What Makes Us Unique */}
-      <section className="py-24 px-6 lg:px-8 bg-[var(--section-bg)]">
+      <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-[var(--section-bg)]">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)]">
+          <div className="text-center space-y-3 sm:space-y-4 mb-10 sm:mb-12 lg:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--text-primary)]">
               What Makes Us Unique
             </h2>
-            <div className="w-24 h-1 bg-[var(--primary-red)] mx-auto"></div>
+            <div className="w-20 sm:w-24 h-1 bg-[var(--primary-red)] mx-auto"></div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-12">
+          <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
             {/* Blended Learning */}
-            <div className="bg-white p-8 rounded-lg shadow-sm space-y-4">
-              <div className="w-16 h-16 bg-[var(--primary-red)] rounded-lg flex items-center justify-center">
-                <span className="text-white text-2xl font-bold">1</span>
+            <div className="bg-white p-6 sm:p-8 rounded-lg shadow-sm space-y-3 sm:space-y-4">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[var(--primary-red)] rounded-lg flex items-center justify-center">
+                <span className="text-white text-xl sm:text-2xl font-bold">
+                  1
+                </span>
               </div>
-              <h3 className="text-2xl font-bold text-[var(--text-primary)]">
+              <h3 className="text-xl sm:text-2xl font-bold text-[var(--text-primary)]">
                 Blended Learning Excellence
               </h3>
               <p className="text-[var(--text-secondary)] leading-relaxed">
@@ -276,11 +358,13 @@ export default function Home() {
             </div>
 
             {/* Real-World Experience */}
-            <div className="bg-white p-8 rounded-lg shadow-sm space-y-4">
-              <div className="w-16 h-16 bg-[var(--primary-red)] rounded-lg flex items-center justify-center">
-                <span className="text-white text-2xl font-bold">2</span>
+            <div className="bg-white p-6 sm:p-8 rounded-lg shadow-sm space-y-3 sm:space-y-4">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[var(--primary-red)] rounded-lg flex items-center justify-center">
+                <span className="text-white text-xl sm:text-2xl font-bold">
+                  2
+                </span>
               </div>
-              <h3 className="text-2xl font-bold text-[var(--text-primary)]">
+              <h3 className="text-xl sm:text-2xl font-bold text-[var(--text-primary)]">
                 Real-World Experience From Day One
               </h3>
               <p className="text-[var(--text-secondary)] leading-relaxed">
@@ -296,11 +380,13 @@ export default function Home() {
             </div>
 
             {/* Dual Pathways */}
-            <div className="bg-white p-8 rounded-lg shadow-sm space-y-4">
-              <div className="w-16 h-16 bg-[var(--primary-red)] rounded-lg flex items-center justify-center">
-                <span className="text-white text-2xl font-bold">3</span>
+            <div className="bg-white p-6 sm:p-8 rounded-lg shadow-sm space-y-3 sm:space-y-4">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[var(--primary-red)] rounded-lg flex items-center justify-center">
+                <span className="text-white text-xl sm:text-2xl font-bold">
+                  3
+                </span>
               </div>
-              <h3 className="text-2xl font-bold text-[var(--text-primary)]">
+              <h3 className="text-xl sm:text-2xl font-bold text-[var(--text-primary)]">
                 Dual Pathways: Hospitality Business & Culinary Arts
               </h3>
               <p className="text-[var(--text-secondary)] leading-relaxed">
@@ -311,11 +397,13 @@ export default function Home() {
             </div>
 
             {/* Progression to Europe */}
-            <div className="bg-white p-8 rounded-lg shadow-sm space-y-4">
-              <div className="w-16 h-16 bg-[var(--primary-red)] rounded-lg flex items-center justify-center">
-                <span className="text-white text-2xl font-bold">4</span>
+            <div className="bg-white p-6 sm:p-8 rounded-lg shadow-sm space-y-3 sm:space-y-4">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[var(--primary-red)] rounded-lg flex items-center justify-center">
+                <span className="text-white text-xl sm:text-2xl font-bold">
+                  4
+                </span>
               </div>
-              <h3 className="text-2xl font-bold text-[var(--text-primary)]">
+              <h3 className="text-xl sm:text-2xl font-bold text-[var(--text-primary)]">
                 Progression to Europe – Specialization Opportunities
               </h3>
               <p className="text-[var(--text-secondary)] leading-relaxed">
@@ -331,19 +419,22 @@ export default function Home() {
       </section>
 
       {/* Programs Section */}
-      <section id="programs" className="py-24 px-6 lg:px-8 bg-white">
+      <section
+        id="programs"
+        className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white"
+      >
         <div className="max-w-7xl mx-auto">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)]">
+          <div className="text-center space-y-3 sm:space-y-4 mb-10 sm:mb-12 lg:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--text-primary)]">
               Our Programs
             </h2>
-            <div className="w-24 h-1 bg-[var(--primary-red)] mx-auto"></div>
+            <div className="w-20 sm:w-24 h-1 bg-[var(--primary-red)] mx-auto"></div>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-12">
+          <div className="grid lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12">
             {/* Hospitality Business Program */}
-            <div className="space-y-6">
-              <div className="relative h-64 rounded-lg overflow-hidden shadow-lg">
+            <div className="space-y-4 sm:space-y-6">
+              <div className="relative h-48 sm:h-56 lg:h-64 rounded-lg overflow-hidden shadow-lg">
                 <Image
                   src="https://imagesplashh.vercel.app/api/image/600/400/Hospitality+Business"
                   alt="Hospitality Business Program"
@@ -351,11 +442,11 @@ export default function Home() {
                   className="object-cover"
                 />
               </div>
-              <div className="space-y-4">
-                <h3 className="text-3xl font-bold text-[var(--text-primary)]">
+              <div className="space-y-3 sm:space-y-4">
+                <h3 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)]">
                   Hospitality Business Program
                 </h3>
-                <ul className="space-y-3 text-[var(--text-secondary)]">
+                <ul className="space-y-2 sm:space-y-3 text-sm sm:text-base text-[var(--text-secondary)]">
                   <li className="flex items-start">
                     <span className="text-[var(--primary-red)] mr-3 mt-1">
                       •
@@ -417,8 +508,8 @@ export default function Home() {
             </div>
 
             {/* Culinary Arts Program */}
-            <div className="space-y-6">
-              <div className="relative h-64 rounded-lg overflow-hidden shadow-lg">
+            <div className="space-y-4 sm:space-y-6">
+              <div className="relative h-48 sm:h-56 lg:h-64 rounded-lg overflow-hidden shadow-lg">
                 <Image
                   src="https://imagesplashh.vercel.app/api/image/600/400/Culinary+Arts"
                   alt="Culinary Arts Program"
@@ -426,11 +517,11 @@ export default function Home() {
                   className="object-cover"
                 />
               </div>
-              <div className="space-y-4">
-                <h3 className="text-3xl font-bold text-[var(--text-primary)]">
+              <div className="space-y-3 sm:space-y-4">
+                <h3 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)]">
                   Culinary Arts Program
                 </h3>
-                <ul className="space-y-3 text-[var(--text-secondary)]">
+                <ul className="space-y-2 sm:space-y-3 text-sm sm:text-base text-[var(--text-secondary)]">
                   <li className="flex items-start">
                     <span className="text-[var(--primary-red)] mr-3 mt-1">
                       •
@@ -495,53 +586,53 @@ export default function Home() {
       {/* Why Dubai */}
       <section
         id="why-dubai"
-        className="py-24 px-6 lg:px-8 bg-[var(--section-bg)]"
+        className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-[var(--section-bg)]"
       >
         <div className="max-w-7xl mx-auto">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)]">
+          <div className="text-center space-y-3 sm:space-y-4 mb-10 sm:mb-12 lg:mb-16">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--text-primary)] px-4 sm:px-0">
               Why Choose Dubai as Your Study–Work–Live Destination?
             </h2>
-            <div className="w-24 h-1 bg-[var(--primary-red)] mx-auto"></div>
+            <div className="w-20 sm:w-24 h-1 bg-[var(--primary-red)] mx-auto"></div>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-            <div className="bg-white p-6 rounded-lg shadow-sm text-center space-y-4">
-              <div className="text-4xl font-bold text-[var(--primary-red)]">
+          <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-8 sm:mb-10 lg:mb-12">
+            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm text-center space-y-3 sm:space-y-4">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[var(--primary-red)]">
                 A Global Tourism Capital
               </div>
-              <p className="text-[var(--text-secondary)]">
+              <p className="text-sm sm:text-base text-[var(--text-secondary)]">
                 Dubai welcomes millions of visitors annually and is home to
                 hundreds of luxury hotels, award-winning restaurants, and global
                 hospitality brands.
               </p>
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-sm text-center space-y-4">
-              <div className="text-4xl font-bold text-[var(--primary-red)]">
+            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm text-center space-y-3 sm:space-y-4">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[var(--primary-red)]">
                 Career Opportunities Everywhere
               </div>
-              <p className="text-[var(--text-secondary)]">
+              <p className="text-sm sm:text-base text-[var(--text-secondary)]">
                 5-star hotels, international brands, world-class restaurants,
                 mega events, tourism companies, and startup opportunities.
               </p>
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-sm text-center space-y-4">
-              <div className="text-4xl font-bold text-[var(--primary-red)]">
+            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm text-center space-y-3 sm:space-y-4">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[var(--primary-red)]">
                 Safe, Modern, and Multicultural
               </div>
-              <p className="text-[var(--text-secondary)]">
+              <p className="text-sm sm:text-base text-[var(--text-secondary)]">
                 With over 200 nationalities, Dubai is one of the safest and most
                 international cities in the world.
               </p>
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-sm text-center space-y-4">
-              <div className="text-4xl font-bold text-[var(--primary-red)]">
+            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm text-center space-y-3 sm:space-y-4">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[var(--primary-red)]">
                 Future-Ready Lifestyle
               </div>
-              <p className="text-[var(--text-secondary)]">
+              <p className="text-sm sm:text-base text-[var(--text-secondary)]">
                 Safe and secured city, high-tech infrastructure, excellent
                 quality of life, competitive work opportunities, and a
                 fast-growing professional landscape.
@@ -549,7 +640,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="relative h-96 rounded-lg overflow-hidden shadow-xl">
+          <div className="relative h-64 sm:h-80 lg:h-96 rounded-lg overflow-hidden shadow-xl">
             <Image
               src="https://imagesplashh.vercel.app/api/image/1200/600/Dubai+Skyline"
               alt="Dubai"
@@ -561,24 +652,27 @@ export default function Home() {
       </section>
 
       {/* Why Study Hospitality */}
-      <section id="why-study" className="py-24 px-6 lg:px-8 bg-white">
+      <section
+        id="why-study"
+        className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white"
+      >
         <div className="max-w-7xl mx-auto">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)]">
+          <div className="text-center space-y-3 sm:space-y-4 mb-10 sm:mb-12 lg:mb-16">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--text-primary)] px-4 sm:px-0">
               Why Study Hospitality Management & Culinary Arts?
             </h2>
-            <div className="w-24 h-1 bg-[var(--primary-red)] mx-auto"></div>
-            <p className="text-xl text-[var(--text-secondary)] max-w-3xl mx-auto">
+            <div className="w-20 sm:w-24 h-1 bg-[var(--primary-red)] mx-auto"></div>
+            <p className="text-base sm:text-lg lg:text-xl text-[var(--text-secondary)] max-w-3xl mx-auto px-4 sm:px-0">
               Studying Hospitality Management and Culinary Arts offers a unique
               combination of skills, blending business acumen, customer service,
               and culinary creativity.
             </p>
           </div>
 
-          <div className="space-y-16">
+          <div className="space-y-12 sm:space-y-16">
             {/* Global Career Opportunities */}
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <div className="relative h-96 rounded-lg overflow-hidden shadow-lg">
+            <div className="grid lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 items-center">
+              <div className="relative h-64 sm:h-80 lg:h-96 rounded-lg overflow-hidden shadow-lg">
                 <Image
                   src="https://imagesplashh.vercel.app/api/image/800/600/Global+Careers"
                   alt="Global Career Opportunities"
@@ -586,11 +680,11 @@ export default function Home() {
                   className="object-cover"
                 />
               </div>
-              <div className="space-y-6">
-                <h3 className="text-3xl font-bold text-[var(--text-primary)]">
+              <div className="space-y-4 sm:space-y-6">
+                <h3 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)]">
                   Global Career Opportunities
                 </h3>
-                <p className="text-lg text-[var(--text-secondary)] leading-relaxed">
+                <p className="text-base sm:text-lg text-[var(--text-secondary)] leading-relaxed">
                   Graduates have access to a wide range of careers worldwide:
                   Hotels, Resorts, Cruise Lines, Fine Dining & F&B Operations,
                   Event Management & Catering. The global culinary market was
@@ -601,12 +695,12 @@ export default function Home() {
             </div>
 
             {/* Transferable Skills */}
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <div className="space-y-6 order-2 lg:order-1">
-                <h3 className="text-3xl font-bold text-[var(--text-primary)]">
+            <div className="grid lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 items-center">
+              <div className="space-y-4 sm:space-y-6 order-2 lg:order-1">
+                <h3 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)]">
                   Transferable Skills
                 </h3>
-                <p className="text-lg text-[var(--text-secondary)] leading-relaxed">
+                <p className="text-base sm:text-lg text-[var(--text-secondary)] leading-relaxed">
                   A combination of hospitality management and culinary arts
                   provides a versatile skill set: Leadership & Team Management,
                   Creative & Critical Thinking, Customer Service &
@@ -619,7 +713,7 @@ export default function Home() {
                   applicable in diverse industries.
                 </p>
               </div>
-              <div className="relative h-96 rounded-lg overflow-hidden shadow-lg order-1 lg:order-2">
+              <div className="relative h-64 sm:h-80 lg:h-96 rounded-lg overflow-hidden shadow-lg order-1 lg:order-2">
                 <Image
                   src="https://imagesplashh.vercel.app/api/image/800/600/Transferable+Skills"
                   alt="Transferable Skills"
@@ -630,8 +724,8 @@ export default function Home() {
             </div>
 
             {/* Entrepreneurship */}
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <div className="relative h-96 rounded-lg overflow-hidden shadow-lg">
+            <div className="grid lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 items-center">
+              <div className="relative h-64 sm:h-80 lg:h-96 rounded-lg overflow-hidden shadow-lg">
                 <Image
                   src="https://imagesplashh.vercel.app/api/image/800/600/Entrepreneurship"
                   alt="Entrepreneurship Opportunities"
@@ -639,11 +733,11 @@ export default function Home() {
                   className="object-cover"
                 />
               </div>
-              <div className="space-y-6">
-                <h3 className="text-3xl font-bold text-[var(--text-primary)]">
+              <div className="space-y-4 sm:space-y-6">
+                <h3 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)]">
                   Entrepreneurship Opportunities
                 </h3>
-                <p className="text-lg text-[var(--text-secondary)] leading-relaxed">
+                <p className="text-base sm:text-lg text-[var(--text-secondary)] leading-relaxed">
                   Graduates are uniquely equipped to launch their own
                   businesses: Restaurants, Cafes, Catering Ventures, Boutique
                   Hotels & Culinary Lodges, Franchise Ownership, and Food
@@ -662,16 +756,16 @@ export default function Home() {
       </section>
 
       {/* Why Students Choose EHH */}
-      <section className="py-24 px-6 lg:px-8 bg-[var(--section-bg)]">
+      <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-[var(--section-bg)]">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)]">
+          <div className="text-center space-y-3 sm:space-y-4 mb-10 sm:mb-12 lg:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--text-primary)]">
               Why Students Choose EHH
             </h2>
-            <div className="w-24 h-1 bg-[var(--primary-red)] mx-auto"></div>
+            <div className="w-20 sm:w-24 h-1 bg-[var(--primary-red)] mx-auto"></div>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {[
               "Swiss-inspired education model - Practicals with Academic underpinning",
               "Real industry training, not simulations",
@@ -682,9 +776,9 @@ export default function Home() {
             ].map((item, index) => (
               <div
                 key={index}
-                className="bg-white p-6 rounded-lg shadow-sm border-l-4 border-[var(--primary-red)]"
+                className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border-l-4 border-[var(--primary-red)]"
               >
-                <p className="text-[var(--text-secondary)] leading-relaxed">
+                <p className="text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed">
                   {item}
                 </p>
               </div>
@@ -696,26 +790,26 @@ export default function Home() {
       {/* Contact/CTA Section */}
       <section
         id="contact"
-        className="py-24 px-6 lg:px-8 bg-[var(--primary-red)]"
+        className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-[var(--primary-red)]"
       >
-        <div className="max-w-4xl mx-auto text-center space-y-8">
-          <h2 className="text-4xl md:text-5xl font-bold text-white">
+        <div className="max-w-4xl mx-auto text-center space-y-6 sm:space-y-8">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white">
             Contact Our Team Today!
           </h2>
-          <p className="text-xl text-white/90 leading-relaxed">
+          <p className="text-base sm:text-lg lg:text-xl text-white/90 leading-relaxed px-4 sm:px-0">
             EHH graduates stand out because they have what the industry values
             most: hands-on experience, professionalism, and global readiness.
           </p>
-          <p className="text-2xl font-semibold text-white italic">
+          <p className="text-lg sm:text-xl lg:text-2xl font-semibold text-white italic px-4 sm:px-0">
             "Your global hospitality career starts here! Connect with us if
             you're serious about excelling in the service sector, creating your
             own business, or exploring international opportunities."
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-[var(--primary-red)] px-8 py-4 rounded-md hover:bg-gray-100 transition-colors font-semibold text-lg">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0">
+            <button className="bg-white text-[var(--primary-red)] px-6 sm:px-8 py-3 sm:py-4 rounded-md hover:bg-gray-100 transition-colors font-semibold text-base sm:text-lg">
               Get Started
             </button>
-            <button className="border-2 border-white text-white px-8 py-4 rounded-md hover:bg-white/10 transition-colors font-semibold text-lg">
+            <button className="border-2 border-white text-white px-6 sm:px-8 py-3 sm:py-4 rounded-md hover:bg-white/10 transition-colors font-semibold text-base sm:text-lg">
               Request Information
             </button>
           </div>
@@ -723,22 +817,24 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-[var(--text-primary)] text-white py-12 px-6 lg:px-8">
+      <footer className="bg-[var(--text-primary)] text-white py-10 sm:py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-8 mb-8">
+          <div className="grid sm:grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mb-6 sm:mb-8">
             <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="w-10 h-10 bg-[var(--primary-red)] rounded"></div>
-                <span className="text-xl font-semibold">EHH</span>
+              <div className="flex items-center space-x-2 mb-3 sm:mb-4">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[var(--primary-red)] rounded"></div>
+                <span className="text-lg sm:text-xl font-semibold">EHH</span>
               </div>
-              <p className="text-gray-400">
+              <p className="text-sm sm:text-base text-gray-400">
                 Ecole Hôtelière Helvétique - Shaping Tomorrow's Global
                 Hospitality Leaders
               </p>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Quick Links</h4>
-              <ul className="space-y-2 text-gray-400">
+              <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">
+                Quick Links
+              </h4>
+              <ul className="space-y-2 text-sm sm:text-base text-gray-400">
                 <li>
                   <button
                     onClick={() => scrollToSection("about")}
@@ -766,14 +862,16 @@ export default function Home() {
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Contact</h4>
-              <p className="text-gray-400">Dubai, UAE</p>
-              <p className="text-gray-400">
+              <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">
+                Contact
+              </h4>
+              <p className="text-sm sm:text-base text-gray-400">Dubai, UAE</p>
+              <p className="text-sm sm:text-base text-gray-400">
                 In Association with MAF Accor Hotels and Resorts
               </p>
             </div>
           </div>
-          <div className="border-t border-gray-700 pt-8 text-center text-gray-400">
+          <div className="border-t border-gray-700 pt-6 sm:pt-8 text-center text-sm sm:text-base text-gray-400">
             <p>
               &copy; {new Date().getFullYear()} Ecole Hôtelière Helvétique. All
               rights reserved.
