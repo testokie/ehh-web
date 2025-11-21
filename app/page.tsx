@@ -610,7 +610,7 @@ export default function Home() {
           </div>
 
           <div className="relative h-96 lg:h-[32rem] rounded-lg overflow-hidden">
-            <Image src="/dubai.png" alt="Dubai" fill className="object-cover" />
+            <Image src="/dubai.jpg" alt="Dubai" fill className="object-cover" />
           </div>
         </div>
       </section>
