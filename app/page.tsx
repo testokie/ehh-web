@@ -22,22 +22,19 @@ import {
 
 const heroSlides = [
   {
-    image: "https://imagesplashh.vercel.app/api/image/1920/1080/Dubai",
+    image: "/hero/1.png",
     alt: "EHH Campus Dubai",
   },
   {
-    image:
-      "https://imagesplashh.vercel.app/api/image/1920/1080/Hospitality+Training",
+    image: "/hero/2.png",
     alt: "Hospitality Training",
   },
   {
-    image:
-      "https://imagesplashh.vercel.app/api/image/1920/1080/Culinary+Arts+Program",
+    image: "/hero/3.png",
     alt: "Culinary Arts Program",
   },
   {
-    image:
-      "https://imagesplashh.vercel.app/api/image/1920/1080/Real+World+Experience",
+    image: "/hero/4.png",
     alt: "Real World Experience",
   },
 ];
