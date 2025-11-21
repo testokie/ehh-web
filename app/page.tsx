@@ -433,7 +433,7 @@ export default function Home() {
                 <h3 className="text-2xl sm:text-3xl font-bold text-text-primary mb-6">
                   Hospitality Business Program
                 </h3>
-                <div className="flex flex-row gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <div className="space-y-3">
                     {[
                       "Front Office",
@@ -486,7 +486,7 @@ export default function Home() {
                 <h3 className="text-2xl sm:text-3xl font-bold text-text-primary mb-6">
                   Culinary Arts Program
                 </h3>
-                <div className="flex flex-row gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <div className="space-y-3">
                     {[
                       "Culinary Fundamentals",
@@ -609,7 +609,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="relative h-96 lg:h-[32rem] rounded-lg overflow-hidden">
+          <div className="relative h-[30rem] lg:h-[40rem] rounded-lg overflow-hidden">
             <Image src="/dubai.jpg" alt="Dubai" fill className="object-cover" />
           </div>
         </div>
