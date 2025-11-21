@@ -423,7 +423,7 @@ export default function Home() {
             <div className="bg-section-bg rounded-xl overflow-hidden">
               <div className="relative h-72 lg:h-96">
                 <Image
-                  src="/prog1.png"
+                  src="/prog1.jpg"
                   alt="Hospitality Business Program"
                   fill
                   className="object-cover"
