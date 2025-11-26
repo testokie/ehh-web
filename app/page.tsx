@@ -689,7 +689,7 @@ export default function Home() {
             <div className="grid lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 items-center">
               <div className="relative h-64 sm:h-80 lg:h-96 rounded-lg overflow-hidden shadow-lg">
                 <Image
-                  src="/1.png"
+                  src="/global.webp"
                   alt="Global Career Opportunities"
                   fill
                   className="object-cover"
@@ -730,7 +730,7 @@ export default function Home() {
               </div>
               <div className="relative h-64 sm:h-80 lg:h-96 rounded-lg overflow-hidden shadow-lg order-1 lg:order-2">
                 <Image
-                  src="/2.png"
+                  src="/transferable.webp"
                   alt="Transferable Skills"
                   fill
                   className="object-cover"
@@ -742,7 +742,7 @@ export default function Home() {
             <div className="grid lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 items-center">
               <div className="relative h-64 sm:h-80 lg:h-96 rounded-lg overflow-hidden shadow-lg">
                 <Image
-                  src="/3.png"
+                  src="/entrepreneurship.webp"
                   alt="Entrepreneurship Opportunities"
                   fill
                   className="object-cover"
