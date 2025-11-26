@@ -423,7 +423,7 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
             {/* Hospitality Business Program */}
             <div className="bg-section-bg rounded-xl overflow-hidden">
-              <div className="relative h-72 lg:h-96">
+              <div className="relative aspect-square">
                 <Image
                   src="/prog1.webp"
                   alt="Hospitality Business Program"
@@ -476,7 +476,7 @@ export default function Home() {
 
             {/* Culinary Arts Program */}
             <div className="bg-section-bg rounded-xl overflow-hidden">
-              <div className="relative h-72 lg:h-96">
+              <div className="relative aspect-square">
                 <Image
                   src="/prog2.webp"
                   alt="Culinary Arts Program"
@@ -534,10 +534,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center space-y-4 mb-12 lg:mb-16">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary">
-              Pullman Dubai Creek City Centre
+              EHH Academic Training Hub
             </h2>
             <p className="text-lg text-text-secondary max-w-2xl mx-auto">
-              EHH Academic Training Hub
+              Pullman Dubai Creek City Centre
             </p>
             <div className="w-24 h-1 bg-primary-red mx-auto"></div>
           </div>
