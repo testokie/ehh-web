@@ -24,19 +24,19 @@ import {
 
 const heroSlides = [
   {
-    image: "/hero/1.png",
+    image: "/hero/hom1.webp",
     alt: "EHH Campus Dubai",
   },
   {
-    image: "/hero/2.png",
+    image: "/hero/hom2.webp",
     alt: "Hospitality Training",
   },
   {
-    image: "/hero/3.png",
+    image: "/hero/hom3.webp",
     alt: "Culinary Arts Program",
   },
   {
-    image: "/hero/4.png",
+    image: "/hero/hom4.webp",
     alt: "Real World Experience",
   },
 ];
