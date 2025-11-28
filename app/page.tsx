@@ -941,10 +941,10 @@ export default function Home() {
                 <p className="flex items-center justify-center gap-2">
                   <Mail className="w-4 h-4 shrink-0" />
                   <a
-                    href="mailto:info@swisse.com"
+                    href="mailto:info@swissec.com"
                     className="hover:text-white transition-colors"
                   >
-                    info@swisse.com
+                    info@swissec.com
                   </a>
                 </p>
                 <p className="flex items-center justify-center gap-2">
@@ -1051,10 +1051,10 @@ export default function Home() {
                 <p className="flex items-center gap-2">
                   <Mail className="w-4 h-4 shrink-0 text-gray-400" />
                   <a
-                    href="mailto:info@swisse.com"
+                    href="mailto:info@swissec.com"
                     className="hover:text-white transition-colors"
                   >
-                    info@swisse.com
+                    info@swissec.com
                   </a>
                 </p>
                 <p className="flex items-center gap-2">
