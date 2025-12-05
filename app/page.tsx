@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { sendGAEvent } from "@next/third-parties/google";
 import {
   MapPin,
   Phone,
@@ -95,11 +96,15 @@ export default function Home() {
     };
   }, [isMobileMenuOpen]);
 
-  const scrollToSection = (id: string) => {
+  const scrollToSection = (id: string, label?: string) => {
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
       setIsMobileMenuOpen(false);
+      sendGAEvent("event", "navigation_click", {
+        event_category: "Navigation",
+        event_label: label || id,
+      });
     }
   };
 
@@ -129,7 +134,7 @@ export default function Home() {
               {navItems.map((item) => (
                 <button
                   key={item.sectionId}
-                  onClick={() => scrollToSection(item.sectionId)}
+                  onClick={() => scrollToSection(item.sectionId, item.label)}
                   className={`transition-colors font-medium ${
                     item.isCTA
                       ? `px-6 py-2 rounded-md bg-primary-red text-white hover:bg-primary-red-dark`
@@ -183,7 +188,9 @@ export default function Home() {
               {navItems.map((item) => (
                 <button
                   key={item.sectionId}
-                  onClick={() => scrollToSection(item.sectionId)}
+                  onClick={() =>
+                    scrollToSection(item.sectionId, `Mobile - ${item.label}`)
+                  }
                   className={`w-full text-left px-4 py-3 rounded-md transition-colors font-medium ${
                     item.isCTA
                       ? "bg-primary-red text-white hover:bg-primary-red-dark"
@@ -241,13 +248,25 @@ export default function Home() {
               </div>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start px-4 sm:px-0">
                 <button
-                  onClick={() => scrollToSection("contact")}
+                  onClick={() => {
+                    sendGAEvent("event", "cta_click", {
+                      event_category: "Hero CTA",
+                      event_label: "Start Your Journey",
+                    });
+                    scrollToSection("contact", "Start Your Journey");
+                  }}
                   className="bg-primary-red text-white px-6 sm:px-8 py-3 sm:py-4 rounded-md hover:bg-primary-red-dark transition-colors font-semibold text-base sm:text-lg shadow-lg hover:shadow-xl transform hover:scale-105"
                 >
                   Start Your Journey
                 </button>
                 <button
-                  onClick={() => scrollToSection("about")}
+                  onClick={() => {
+                    sendGAEvent("event", "cta_click", {
+                      event_category: "Hero CTA",
+                      event_label: "Learn More",
+                    });
+                    scrollToSection("about", "Learn More");
+                  }}
                   className="bg-white/10 backdrop-blur-sm border-2 border-white text-white px-6 sm:px-8 py-3 sm:py-4 rounded-md hover:bg-white hover:text-primary-red transition-colors font-semibold text-base sm:text-lg shadow-lg hover:shadow-xl transform hover:scale-105"
                 >
                   Learn More
@@ -262,7 +281,13 @@ export default function Home() {
           {heroSlides.map((_, index) => (
             <button
               key={index}
-              onClick={() => setCurrentSlide(index)}
+              onClick={() => {
+                setCurrentSlide(index);
+                sendGAEvent("event", "slider_click", {
+                  event_category: "Hero Slider",
+                  event_label: `Slide ${index + 1}`,
+                });
+              }}
               className={`h-2 rounded-full transition-all duration-300 ${
                 index === currentSlide
                   ? "w-6 sm:w-8 bg-primary-red"
@@ -933,6 +958,12 @@ export default function Home() {
                   <Mail className="w-4 h-4 shrink-0" />
                   <a
                     href="mailto:info@ehheducation.com"
+                    onClick={() =>
+                      sendGAEvent("event", "email_click", {
+                        event_category: "Contact",
+                        event_label: "info@ehheducation.com",
+                      })
+                    }
                     className="hover:text-white transition-colors"
                   >
                     info@ehheducation.com
@@ -942,6 +973,12 @@ export default function Home() {
                   <Mail className="w-4 h-4 shrink-0" />
                   <a
                     href="mailto:info@swissec.com"
+                    onClick={() =>
+                      sendGAEvent("event", "email_click", {
+                        event_category: "Contact",
+                        event_label: "info@swissec.com",
+                      })
+                    }
                     className="hover:text-white transition-colors"
                   >
                     info@swissec.com
@@ -959,6 +996,12 @@ export default function Home() {
 
                   <a
                     href="https://wa.me/971501016067"
+                    onClick={() =>
+                      sendGAEvent("event", "whatsapp_click", {
+                        event_category: "Contact",
+                        event_label: "+971 50 101 6067",
+                      })
+                    }
                     className="hover:text-white transition-colors"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -978,6 +1021,12 @@ export default function Home() {
 
                   <a
                     href="https://wa.me/971507353900"
+                    onClick={() =>
+                      sendGAEvent("event", "whatsapp_click", {
+                        event_category: "Contact",
+                        event_label: "+971 50 735 3900",
+                      })
+                    }
                     className="hover:text-white transition-colors"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -1022,7 +1071,12 @@ export default function Home() {
                 {navItems.map((item) => (
                   <li key={item.sectionId}>
                     <button
-                      onClick={() => scrollToSection(item.sectionId)}
+                      onClick={() =>
+                        scrollToSection(
+                          item.sectionId,
+                          `Footer - ${item.label}`
+                        )
+                      }
                       className="text-gray-400 hover:text-white transition-colors"
                     >
                       {item.label}
@@ -1043,6 +1097,12 @@ export default function Home() {
                   <Mail className="w-4 h-4 shrink-0 text-gray-400" />
                   <a
                     href="mailto:info@ehheducation.com"
+                    onClick={() =>
+                      sendGAEvent("event", "email_click", {
+                        event_category: "Contact",
+                        event_label: "info@ehheducation.com",
+                      })
+                    }
                     className="hover:text-white transition-colors"
                   >
                     info@ehheducation.com
@@ -1052,6 +1112,12 @@ export default function Home() {
                   <Mail className="w-4 h-4 shrink-0 text-gray-400" />
                   <a
                     href="mailto:info@swissec.com"
+                    onClick={() =>
+                      sendGAEvent("event", "email_click", {
+                        event_category: "Contact",
+                        event_label: "info@swissec.com",
+                      })
+                    }
                     className="hover:text-white transition-colors"
                   >
                     info@swissec.com
@@ -1068,6 +1134,12 @@ export default function Home() {
                   </svg>
                   <a
                     href="https://wa.me/971501016067"
+                    onClick={() =>
+                      sendGAEvent("event", "whatsapp_click", {
+                        event_category: "Contact",
+                        event_label: "+971 50 101 6067",
+                      })
+                    }
                     className="hover:text-white transition-colors"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -1086,6 +1158,12 @@ export default function Home() {
                   </svg>
                   <a
                     href="https://wa.me/971507353900"
+                    onClick={() =>
+                      sendGAEvent("event", "whatsapp_click", {
+                        event_category: "Contact",
+                        event_label: "+971 50 735 3900",
+                      })
+                    }
                     className="hover:text-white transition-colors"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -1103,6 +1181,12 @@ export default function Home() {
                 <li>
                   <a
                     href="https://www.facebook.com/ecolehotelierehelvetique/?ref=page_internal"
+                    onClick={() =>
+                      sendGAEvent("event", "social_click", {
+                        event_category: "Social Media",
+                        event_label: "Facebook",
+                      })
+                    }
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-gray-400 hover:text-white transition-colors flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full hover:bg-white/10"
@@ -1114,6 +1198,12 @@ export default function Home() {
                 <li>
                   <a
                     href="https://www.linkedin.com/company/ecole-hoteliere-helvetique/"
+                    onClick={() =>
+                      sendGAEvent("event", "social_click", {
+                        event_category: "Social Media",
+                        event_label: "LinkedIn",
+                      })
+                    }
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-gray-400 hover:text-white transition-colors flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full hover:bg-white/10"
@@ -1125,6 +1215,12 @@ export default function Home() {
                 <li>
                   <a
                     href="https://www.instagram.com/ehheducation/"
+                    onClick={() =>
+                      sendGAEvent("event", "social_click", {
+                        event_category: "Social Media",
+                        event_label: "Instagram",
+                      })
+                    }
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-gray-400 hover:text-white transition-colors flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full hover:bg-white/10"
@@ -1136,6 +1232,12 @@ export default function Home() {
                 <li>
                   <a
                     href="https://www.youtube.com/channel/UC_60J4DAFPrzJ3QczG5cOOg"
+                    onClick={() =>
+                      sendGAEvent("event", "social_click", {
+                        event_category: "Social Media",
+                        event_label: "YouTube",
+                      })
+                    }
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-gray-400 hover:text-white transition-colors flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full hover:bg-white/10"
